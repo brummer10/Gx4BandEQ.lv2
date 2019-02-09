@@ -521,14 +521,15 @@ static void knob_expose(gx_equalizerUI *ui,gx_controller* knob) {
 	}
 
 	char l[64];
+	double st = (exp(5 * knobstate) - 1) / (exp(5) - 1);
 	if (knob->port == FREQ2) { // 35-680HZ
-		snprintf(l, 63,"%dHz",  (int)  (knobstate * (680 - 35)) +35);
+		snprintf(l, 63,"%dHz",  (int)  (st * (680 - 35)) +35);
 	} else if (knob->port == FREQ1) { // 150-3KHZ
-		snprintf(l, 63,"%dHz",  (int)  (knobstate * (3000 - 150)) +150);
+		snprintf(l, 63,"%dHz",  (int)  (st * (3000 - 150)) +150);
 	} else if (knob->port == FREQ3) { // 450-8.5KHZ
-		snprintf(l, 63,"%dHz",  (int)  (knobstate * (8500 - 450)) +450);
+		snprintf(l, 63,"%dHz",  (int)  (st * (8500 - 450)) +450);
 	} else if (knob->port == FREQ4) { // 750-15KHZ
-		snprintf(l, 63,"%dHz",  (int)  (knobstate * (15000 - 750)) +750);
+		snprintf(l, 63,"%dHz",  (int)  (st * (15000 - 750)) +750);
 	} 
 	if (knob->port <BOOST1 ) {
 		cairo_set_font_size (ui->crf, 12.0);
