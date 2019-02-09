@@ -521,7 +521,7 @@ static void knob_expose(gx_equalizerUI *ui,gx_controller* knob) {
 	}
 
 	char l[64];
-	double st = (exp(5 * knobstate) - 1) / (exp(5) - 1);
+	double st = (exp(6 * knobstate) - 1) / (exp(6) - 1);
 	if (knob->port == FREQ2) { // 35-680HZ
 		snprintf(l, 63,"%dHz",  (int)  (st * (680 - 35)) +35);
 	} else if (knob->port == FREQ1) { // 150-3KHZ
