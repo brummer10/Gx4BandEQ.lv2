@@ -211,7 +211,7 @@ cairo_surface_t *cairo_image_surface_create_from_stream (gx_equalizerUI* ui, con
 ----------------------------------------------------------------------*/
 
 // init the xwindow and return the LV2UI handle
-static LV2UI_Handle instantiate(const struct _LV2UI_Descriptor * descriptor,
+static LV2UI_Handle instantiate(const LV2UI_Descriptor * descriptor,
 			const char * plugin_uri, const char * bundle_path,
 			LV2UI_Write_Function write_function,
 			LV2UI_Controller controller, LV2UI_Widget * widget,
@@ -345,8 +345,8 @@ static void cleanup(LV2UI_Handle handle) {
 -----------------------------------------------------------------------
 ----------------------------------------------------------------------*/
 
-static void draw_indicator_ring( cairo_t *cr, double knobstate, double ind_radius, 
-								 double angle, double x_center, double y_center) {
+static void draw_indicator_ring( cairo_t *cr, gx_controller* knob, double knobstate,
+				double ind_radius, double angle, double x_center, double y_center) {
  
 	const double scale_zero = 20 * (M_PI/180); // defines "dead zone" for knobs
 	double add_angle = 90 * (M_PI / 180.);
@@ -357,7 +357,11 @@ static void draw_indicator_ring( cairo_t *cr, double knobstate, double ind_radiu
 	cairo_set_dash(cr, dashes, sizeof(dashes)/sizeof(dashes[0]), -1.0);
 
 	// draw background
-	cairo_set_source_rgb(cr,0.2, 0.2, 0.2);
+	if (knob->is_active) {
+		cairo_set_source_rgb(cr,0.4, 0.4, 0.4);
+	} else {
+		cairo_set_source_rgb(cr,0.2, 0.2, 0.2);
+	}
 	cairo_set_line_width(cr, 4.0);
 	cairo_arc (cr, x_center , y_center, ind_radius,
 		  add_angle + angle2, add_angle + scale_zero + 320 * (M_PI/180));
@@ -477,7 +481,7 @@ static void knob_expose(gx_equalizerUI *ui,gx_controller* knob) {
 	cairo_text_extents_t extents;
 
 	if (knob->port >=BOOST1 ) {
-		draw_indicator_ring(ui->crf, knobstate, radius+8.0, angle, knobx1+arc_offset/2,knoby1+arc_offset/2);
+		draw_indicator_ring(ui->crf, knob, knobstate, radius+8.0, angle, knobx1+arc_offset/2,knoby1+arc_offset/2);
 		cairo_set_font_size (ui->crf, 11.0);
 		cairo_select_font_face (ui->crf, "Sans", CAIRO_FONT_SLANT_NORMAL,
 								   CAIRO_FONT_WEIGHT_BOLD);
